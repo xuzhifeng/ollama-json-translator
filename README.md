@@ -1,8 +1,10 @@
 # Ollama JSON Translator
 
+[中文文档](README_CN.md) | [English](README.md)
+
 **Ollama JSON Translator** is a modern, AI-powered localization tool that translates JSON files (commonly used for i18n) using local LLMs via Ollama. It features a premium, "AI-native" UI with dark/light themes, real-time feedback, and a seamless developer experience.
 
-![Project Screenshot](https://via.placeholder.com/800x400?text=Ollama+JSON+Translator+UI)
+![Project Screenshot](Screenshots/Screenshot%202026-02-07.png)
 
 ## Features
 
