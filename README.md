@@ -56,6 +56,18 @@
 
 4.  Open http://localhost:5173 to view the app.
 
+### Docker Deployment (Recommended)
+
+Quickly run the app using Docker:
+
+1.  Ensure Docker and Docker Compose are installed.
+2.  Run the following command in the root directory:
+    ```bash
+    docker-compose up --build
+    ```
+3.  Open http://localhost to use the app.
+    - **Note**: When configuring the Ollama URL, use `http://host.docker.internal:11434` (instead of `http://localhost:11434`) to allow the container to access your host's Ollama instance.
+
 ## Usage
 
 1.  **Configure**: Enter your Ollama API URL (default: `http://localhost:11434`) and click "Test Connection".
