@@ -1,0 +1,23 @@
+{
+  "title": "Hello World",
+  "description": "This is a sample JSON file to test the translation.",
+  "items": [
+    {
+      "name": "Item One",
+      "value": "The first item in the list."
+    },
+    {
+      "name": "Item Two",
+      "value": "The second item, which is also important."
+    }
+  ],
+  "nested": {
+    "key": "A deeply nested English string.",
+    "array_of_strings": [
+      "Another string for translation.",
+      "And one more."
+    ]
+  },
+  "already_chinese": "这是一段中文文本，不应该被翻译。",
+  "numeric_value": 12345
+}
