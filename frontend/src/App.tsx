@@ -14,7 +14,7 @@ function App() {
   const [uploadSeverity, setUploadSeverity] = useState<'info' | 'success' | 'error'>('info');
   const [originalJson, setOriginalJson] = useState<any | null>(null);
   const [translatedJson, setTranslatedJson] = useState<any | null>(null);
-  const [ollamaApiUrl, setOllamaApiUrl] = useState<string>('http://localhost:11434');
+  const [ollamaApiUrl, setOllamaApiUrl] = useState<string>('http://host.docker.internal:11434');
   const [ollamaModels, setOllamaModels] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>('');
   const [ollamaConnectionStatus, setOllamaConnectionStatus] = useState<string>('');
@@ -38,7 +38,7 @@ function App() {
     setOllamaConnectionStatus(t('connecting'));
     setConnectionSeverity('');
     try {
-      const response = await fetch('http://localhost:3000/ollama/models', {
+      const response = await fetch('/ollama/models', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ollamaApiUrl: url }),
@@ -105,7 +105,7 @@ function App() {
     let parsedJsonData: any = null;
 
     try {
-      const uploadResponse = await fetch('http://localhost:3000/upload', {
+      const uploadResponse = await fetch('/upload', {
         method: 'POST',
         body: formData,
       });
@@ -118,7 +118,7 @@ function App() {
 
       setUploadStatus(t('translating'));
 
-      const translateResponse = await fetch('http://localhost:3000/translate', {
+      const translateResponse = await fetch('/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

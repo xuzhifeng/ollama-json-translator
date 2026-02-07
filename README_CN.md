@@ -36,25 +36,24 @@
     - 运行模型: `ollama run qwen2.5-coder` (或你喜欢的任何模型)
     - **重要**: 请确保 Ollama 服务正在运行 (`ollama serve`)。
 
-### 安装步骤
+### 安装与使用 (Docker)
 
-1.  克隆仓库:
+推荐使用 Docker 快速启动：
+
+1.  **克隆仓库**:
     ```bash
     git clone https://github.com/your-username/ollama-json-translator.git
-    cd ollama-json-translator/frontend
+    cd ollama-json-translator
     ```
 
-2.  安装依赖:
+2.  **启动服务**:
     ```bash
-    npm install
+    docker-compose up --build
     ```
 
-3.  启动开发服务器:
-    ```bash
-    npm run dev
-    ```
-
-4.  打开浏览器访问 http://localhost:5173 。
+3.  **打开应用**:
+    - 访问 http://localhost:5173
+    - **注意**: 应用已预配置为连接宿主机的 Ollama (`http://host.docker.internal:11434`)。
 
 ## 使用说明
 

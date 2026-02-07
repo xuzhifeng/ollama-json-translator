@@ -22,7 +22,7 @@ const port = 3000;
 // Create 'uploads' directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
+  fs.mkdirSync(uploadsDir);
 }
 
 // Configure multer for file uploads
@@ -137,6 +137,6 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-app.listen(port, () => {
-  console.log(`Backend server listening at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Backend server listening at http://0.0.0.0:${port}`);
 });

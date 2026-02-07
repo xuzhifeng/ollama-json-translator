@@ -36,39 +36,27 @@
     - Run a model: `ollama run qwen2.5-coder` (or any preferred model)
     - **Important**: Ensure Ollama is running (`ollama serve`).
 
-### Installation
+### Installation & Usage (Docker)
 
-1.  Clone the repository:
+Quickly run the app using Docker (Recommended):
+
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/your-username/ollama-json-translator.git
-    cd ollama-json-translator/frontend
+    cd ollama-json-translator
     ```
 
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3.  Start the development server:
-    ```bash
-    npm run dev
-    ```
-
-4.  Open http://localhost:5173 to view the app.
-
-### Docker Deployment (Recommended)
-
-Quickly run the app using Docker:
-
-1.  Ensure Docker and Docker Compose are installed.
-2.  Run the following command in the root directory:
+2.  **Run with Docker Compose**:
     ```bash
     docker-compose up --build
     ```
-3.  Open http://localhost to use the app.
-    - **Note**: When configuring the Ollama URL, use `http://host.docker.internal:11434` (instead of `http://localhost:11434`) to allow the container to access your host's Ollama instance.
+
+3.  **Open the App**:
+    - Visit http://localhost:5173 
+    - **Note**: The app is pre-configured to connect to your host's Ollama at `http://host.docker.internal:11434`.
 
 ## Usage
+
 
 1.  **Configure**: Enter your Ollama API URL (default: `http://localhost:11434`) and click "Test Connection".
 2.  **Select Model**: Choose a downloaded model from the list.
