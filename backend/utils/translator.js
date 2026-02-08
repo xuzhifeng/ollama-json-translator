@@ -29,6 +29,12 @@ async function translateText(text, model = 'llama2', sourceLanguage = 'English',
         model: model, // Use the provided model
         prompt: `Translate the following ${sourceLanguage} text to ${targetLanguage}: ${text}`,
         stream: false, // Wait for full response
+        options: {
+          num_ctx: 4096, // Limit context window to 4096 tokens
+          velocity: 1.0,  // Standard velocity
+          repeat_last_n: 64, // Standard repeat monitoring context
+        },
+        keep_alive: "5m", // Keep model loaded for 5 minutes
       }),
       signal: controller.signal // Pass signal to fetch
     });
