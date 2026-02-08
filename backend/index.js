@@ -137,6 +137,9 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-app.listen(port, '0.0.0.0', () => {
+const server = app.listen(port, '0.0.0.0', () => {
   console.log(`Backend server listening at http://0.0.0.0:${port}`);
 });
+
+// Increase server timeout to 10 minutes to verify large file translations
+server.setTimeout(600000);

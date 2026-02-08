@@ -1,6 +1,6 @@
 // backend/utils/translator.js
 
-const FETCH_TIMEOUT = 30000; // 30 seconds timeout
+const FETCH_TIMEOUT = 300000; // 5 minutes timeout
 
 let OLLAMA_API_BASE_URL = 'http://localhost:11434'; // Default Ollama API Base URL
 
@@ -32,7 +32,7 @@ async function translateText(text, model = 'llama2', sourceLanguage = 'English',
       }),
       signal: controller.signal // Pass signal to fetch
     });
-    
+
     clearTimeout(timeoutId); // Clear timeout if fetch completes
 
     if (!response.ok) {
@@ -43,10 +43,10 @@ async function translateText(text, model = 'llama2', sourceLanguage = 'English',
 
     const data = await response.json();
     console.log(`Ollama raw response data for text (first 100 chars): "${text.substring(0, 100)}..."`, data); // 新增日志
-    
+
     if (data.response === undefined || data.response === null || (typeof data.response === 'string' && data.response.trim() === '')) {
-        console.warn(`Ollama returned empty or missing 'response' field for text (first 100 chars): "${text.substring(0, 100)}..."`, data); // 新增警告
-        return text; // 如果 Ollama 没有提供翻译，则返回原文
+      console.warn(`Ollama returned empty or missing 'response' field for text (first 100 chars): "${text.substring(0, 100)}..."`, data); // 新增警告
+      return text; // 如果 Ollama 没有提供翻译，则返回原文
     }
 
     // Assuming the translation is in data.response, adjust based on actual Ollama response

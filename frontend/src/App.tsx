@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
-import { UploadCloud, CheckCircle2, AlertCircle, Globe, FileJson, Download, RefreshCw } from 'lucide-react';
+import { UploadCloud, CheckCircle2, AlertCircle, Globe, FileJson, Download, RefreshCw, Plus, X } from 'lucide-react';
 import { Layout } from './components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/Card';
 import { Button } from './components/ui/Button';
 import { Input, Select } from './components/ui/Input';
 import { cn } from './lib/utils';
 import { useLanguage } from './contexts/LanguageContext';
+
+interface Preset {
+  id: string;
+  name: string;
+  value: string;
+}
 
 function App() {
   const { t } = useLanguage();
@@ -25,9 +31,28 @@ function App() {
   // Default languages for translation logic (not UI language)
   const [sourceLanguage, setSourceLanguage] = useState<string>('English');
   const [targetLanguage, setTargetLanguage] = useState<string>('Chinese');
-  const [keysToExclude, setKeysToExclude] = useState<string>('');
+  const [keysToExclude, setKeysToExclude] = useState<string>(() => {
+    return localStorage.getItem('ollama-translator-exclude-keys') || '';
+  });
+  const [presets, setPresets] = useState<Preset[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('ollama-translator-presets') || '[]');
+    } catch {
+      return [];
+    }
+  });
 
   const supportedLanguages = ['English', 'Chinese', 'Spanish', 'French', 'German', 'Japanese', 'Korean'].map(l => ({ value: l, label: l }));
+
+  // Persist keysToExclude settings
+  useEffect(() => {
+    localStorage.setItem('ollama-translator-exclude-keys', keysToExclude);
+  }, [keysToExclude]);
+
+  // Persist presets
+  useEffect(() => {
+    localStorage.setItem('ollama-translator-presets', JSON.stringify(presets));
+  }, [presets]);
 
   useEffect(() => {
     if (ollamaApiUrl) fetchOllamaModels(ollamaApiUrl);
@@ -146,6 +171,30 @@ function App() {
     }
   };
 
+  const handleSavePreset = () => {
+    if (!keysToExclude.trim()) return;
+    const name = window.prompt("Enter a name for this preset:");
+    if (name) {
+      const newPreset: Preset = {
+        id: Date.now().toString(),
+        name,
+        value: keysToExclude
+      };
+      setPresets([...presets, newPreset]);
+    }
+  };
+
+  const handleDeletePreset = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm("Delete this preset?")) {
+      setPresets(presets.filter(p => p.id !== id));
+    }
+  };
+
+  const handleApplyPreset = (value: string) => {
+    setKeysToExclude(value);
+  };
+
   const handleDownload = () => {
     if (translatedJson) {
       const jsonString = JSON.stringify(translatedJson, null, 2);
@@ -262,12 +311,43 @@ function App() {
                 </div>
               </div>
 
-              <Input
-                label={t('excludeKeys')}
-                value={keysToExclude}
-                onChange={(e) => setKeysToExclude(e.target.value)}
-                placeholder="id, version, timestamp..."
-              />
+              <div className="space-y-3">
+                <Input
+                  label={t('excludeKeys')}
+                  value={keysToExclude}
+                  onChange={(e) => setKeysToExclude(e.target.value)}
+                  placeholder="id, version, timestamp..."
+                />
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-textMuted font-medium mr-1">Presets:</span>
+                  {presets.map(preset => (
+                    <div
+                      key={preset.id}
+                      onClick={() => handleApplyPreset(preset.value)}
+                      className="flex items-center gap-1 px-2 py-1 bg-surface border border-border rounded-md text-xs cursor-pointer hover:bg-primary/10 hover:border-primary/30 transition-colors group"
+                    >
+                      <span>{preset.name}</span>
+                      <button
+                        onClick={(e) => handleDeletePreset(preset.id, e)}
+                        className="opacity-50 group-hover:opacity-100 hover:text-red-500 transition-opacity p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSavePreset}
+                    disabled={!keysToExclude.trim()}
+                    className="h-7 text-xs px-2"
+                    leftIcon={<Plus className="w-3 h-3" />}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
 
               <div className="pt-2">
                 <Button
