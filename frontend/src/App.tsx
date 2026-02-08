@@ -106,6 +106,10 @@ function App() {
     }
   };
 
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
+
+  // ... (existing code)
+
   const handleUploadAndTranslate = async () => {
     if (!selectedFile) {
       setUploadStatus(t('pleaseSelectFile'));
@@ -124,6 +128,10 @@ function App() {
     setOriginalJson(null);
     setTranslatedJson(null);
 
+    // Create new AbortController for this request
+    const controller = new AbortController();
+    setAbortController(controller);
+
     const formData = new FormData();
     formData.append('jsonFile', selectedFile);
 
@@ -133,6 +141,7 @@ function App() {
       const uploadResponse = await fetch('/upload', {
         method: 'POST',
         body: formData,
+        signal: controller.signal, // Bind signal to upload request
       });
 
       if (!uploadResponse.ok) throw new Error(t('uploadFailed'));
@@ -154,6 +163,7 @@ function App() {
           targetLanguage,
           keysToExclude
         }),
+        signal: controller.signal, // Bind signal to translate request
       });
 
       if (!translateResponse.ok) throw new Error('Translation failed');
@@ -163,11 +173,23 @@ function App() {
       setUploadSeverity('success');
       setTranslatedJson(translateResult.data);
     } catch (error: any) {
-      console.error('Error:', error);
-      setUploadStatus(error.message || t('somethingWentWrong'));
-      setUploadSeverity('error');
+      if (error.name === 'AbortError') {
+        setUploadStatus('Translation cancelled.');
+        setUploadSeverity('info');
+      } else {
+        console.error('Error:', error);
+        setUploadStatus(error.message || t('somethingWentWrong'));
+        setUploadSeverity('error');
+      }
     } finally {
       setIsUploadingTranslating(false);
+      setAbortController(null); // Cleanup
+    }
+  };
+
+  const handleCancelTranslation = () => {
+    if (abortController) {
+      abortController.abort();
     }
   };
 
@@ -349,17 +371,28 @@ function App() {
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex gap-3">
                 <Button
                   onClick={handleUploadAndTranslate}
-                  disabled={!selectedFile || !selectedModel}
+                  disabled={!selectedFile || !selectedModel || isUploadingTranslating}
                   isLoading={isUploadingTranslating}
-                  className="w-full"
+                  className="flex-1"
                   size="lg"
                   leftIcon={<Globe className="w-5 h-5" />}
                 >
                   {isUploadingTranslating ? t('translating') : t('startTranslation')}
                 </Button>
+
+                {isUploadingTranslating && (
+                  <Button
+                    onClick={handleCancelTranslation}
+                    variant="danger"
+                    size="lg"
+                    leftIcon={<X className="w-5 h-5" />}
+                  >
+                    Stop
+                  </Button>
+                )}
               </div>
 
               {uploadStatus && (

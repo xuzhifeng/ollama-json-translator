@@ -1,6 +1,6 @@
 // backend/utils/translator.js
 
-const FETCH_TIMEOUT = 300000; // 5 minutes timeout
+const FETCH_TIMEOUT = 1800000; // 30 minutes timeout
 
 let OLLAMA_API_BASE_URL = 'http://localhost:11434'; // Default Ollama API Base URL
 

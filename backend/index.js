@@ -26,6 +26,7 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // Configure multer for file uploads
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/'); // Upload files to the 'uploads' directory
@@ -35,9 +36,12 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
+});
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 // Enable CORS for frontend to access backend
 app.use((req, res, next) => {
@@ -141,5 +145,5 @@ const server = app.listen(port, '0.0.0.0', () => {
   console.log(`Backend server listening at http://0.0.0.0:${port}`);
 });
 
-// Increase server timeout to 10 minutes to verify large file translations
-server.setTimeout(600000);
+// Increase server timeout to 30 minutes to verify large file translations
+server.setTimeout(1800000);
