@@ -337,7 +337,7 @@ function App() {
                     </div>
                   ))}
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     onClick={handleSavePreset}
                     disabled={!keysToExclude.trim()}
